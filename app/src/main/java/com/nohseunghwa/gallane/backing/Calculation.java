@@ -38,14 +38,18 @@ public class Calculation {
         if (!checkBracketPair(data)) {
             throw new RuntimeException("Calculation Error");
         }
-        //계산호출
-//        return recursiveCalc(data);
-        return stackCalc(data);
-    }
-
-    private String stackCalc(String data) {
         ArrayList<String> tokenList = new ArrayList<>();
         tokenList = splitByOperator(data);
+        //계산호출
+        tokenList = stackCalc(tokenList);
+        if (tokenList.size() < 1) {
+            throw new RuntimeException("Calulation Error");
+        }
+        return tokenList.get(0);
+    }
+
+    private ArrayList<String> stackCalc(ArrayList<String> tokenList) {
+        ArrayList<String> resultList = new ArrayList<>();
         if (tokenList.contains("(")) {
 
             //===================================
@@ -73,21 +77,20 @@ public class Calculation {
                 throw new RuntimeException("Calculation Error");
             } else {
                 //있으면
-                String leftData = "";
                 for (int i = 0; i < bracketStart; i++) {
-                    leftData += tokenList.get(i);
+                    resultList.add(tokenList.get(i));
                 }
-                String centerData = "";
+                ArrayList<String> centerData = new ArrayList<>();
                 for (int i = bracketStart + 1; i < bracketEnd; i++) {
-                    centerData += tokenList.get(i);
+                    centerData.add(tokenList.get(i));
                 }
                 centerData = stackCalc(centerData);
-                String rightData = "";
-                for (int i = bracketStart + 1; i < bracketEnd; i++) {
-                    rightData += tokenList.get(i);
+                for (String s : centerData) {
+                    resultList.add(s);
                 }
-
-                data = leftData + centerData + rightData;
+                for (int i = bracketEnd + 1; i < tokenList.size(); i++) {
+                    resultList.add(tokenList.get(i));
+                }
             }
             //===================================
         } else {
@@ -101,18 +104,17 @@ public class Calculation {
                 tokenList.set(calcPosition, "");
                 tokenList.set(calcPosition + 1, "");
             }
-
-//            data = "0";
-            data = "";
             for (String s : tokenList) {
-                data += s;
+                if (!s.isEmpty()) {
+                    resultList.add(s);
+                }
             }
         }
 
-        if (calcDone(data)) {
-            return data.replace("0-", "-");
+        if (resultList.size() <= 1) {
+            return resultList;
         } else {
-            return stackCalc(data);
+            return stackCalc(resultList);
         }
     }
 
@@ -136,7 +138,7 @@ public class Calculation {
     private int findCalcPosition(ArrayList<String> tokenList) {
         int firstRun = -1;
         int level = -1;
-        int num=0;
+        int num = 0;
 //        if (tokenList.size() > 2 && tokenList.get(1) == "-" && tokenList.get(0) == "0") {
 //            num = 2;
 //        } else {
@@ -188,7 +190,9 @@ public class Calculation {
                 if (digits.isEmpty() && "-".equals(data.substring(i, i + 1))) {
                     digits += data.substring(i, i + 1);
                 } else {
-                    tokenList.add(digits);
+                    if (!digits.isEmpty()) {
+                        tokenList.add(digits);
+                    }
                     tokenList.add(data.substring(i, i + 1));
                     digits = "";
                 }
