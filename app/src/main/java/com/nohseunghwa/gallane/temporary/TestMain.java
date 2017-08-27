@@ -19,9 +19,11 @@ public class TestMain {
             if (input.isEmpty()) {
                 break;
             }
-            System.out.println(input + " = " + Calculation.Calculate(input));
-
-
+            try {
+                System.out.println(input + " = " + Calculation.Calculate(input));
+            } catch (Exception e) {
+                System.out.println(input + " = " + "error!");
+            }
         }
     }
 }

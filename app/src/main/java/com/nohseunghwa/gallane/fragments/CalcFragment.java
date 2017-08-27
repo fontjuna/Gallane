@@ -111,6 +111,10 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                     mInputTextView.setText(mInput);
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), "수식에 이상이 있습니다.", Toast.LENGTH_SHORT).show();
+                    mResult = (mResult + "\n" + mPreviuos).trim();
+                    mResultTextView.setText(mResult);
+                    mPreviuos = mInput + " = error";
+                    mPreviuosTextView.setText(mPreviuos);
                     mInput = "0";
                     mInputTextView.setText(mInput);
                 }
