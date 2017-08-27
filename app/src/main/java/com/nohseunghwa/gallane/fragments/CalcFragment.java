@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nohseunghwa.gallane.R;
-import com.nohseunghwa.gallane.temporary.Calculation;
+import com.nohseunghwa.gallane.backing.Calculation;
 
 import java.text.DecimalFormat;
 
@@ -111,6 +111,8 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                     mInputTextView.setText(mInput);
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), "수식에 이상이 있습니다.", Toast.LENGTH_SHORT).show();
+                    mInput = "0";
+                    mInputTextView.setText(mInput);
                 }
                 break;
             }

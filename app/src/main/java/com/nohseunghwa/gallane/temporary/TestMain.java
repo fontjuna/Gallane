@@ -1,6 +1,6 @@
-package com.nohseunghwa.gallane.backing;
+package com.nohseunghwa.gallane.temporary;
 
-import com.nohseunghwa.gallane.temporary.Calculation;
+import com.nohseunghwa.gallane.backing.Calculation;
 
 import java.util.Scanner;
 
