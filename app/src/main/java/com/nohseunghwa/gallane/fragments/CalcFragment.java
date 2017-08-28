@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
     private TextView mResultTextView;
     private TextView mPreviuosTextView;
     private TextView mInputTextView;
+    private ScrollView mScrollView;
     private String mInput;
     private String mPreviuos;
     private String mResult;
@@ -68,6 +70,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         mInputTextView = (TextView) view.findViewById(R.id.input_text_view);
         mPreviuosTextView = (TextView) view.findViewById(R.id.previuos_text_view);
         mResultTextView = (TextView) view.findViewById(R.id.result_text_view);
+        mScrollView = (ScrollView) view.findViewById(R.id.scroll_win);
         mInputTextView.setText(mInput);
         mPreviuosTextView.setText(mPreviuos);
         mResultTextView.setText(mResult);
@@ -84,6 +87,10 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.button_9).setOnClickListener(this);
         view.findViewById(R.id.button_dot).setOnClickListener(this);
 
+        view.findViewById(R.id.button_sqrt).setOnClickListener(this);
+        view.findViewById(R.id.button_pow).setOnClickListener(this);
+        view.findViewById(R.id.button_twozero).setOnClickListener(this);
+        view.findViewById(R.id.button_clear).setOnClickListener(this);
         view.findViewById(R.id.button_plus).setOnClickListener(this);
         view.findViewById(R.id.button_minus).setOnClickListener(this);
         view.findViewById(R.id.button_divide).setOnClickListener(this);
@@ -118,6 +125,7 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                     mInput = "0";
                     mInputTextView.setText(mInput);
                 }
+                mScrollView.fullScroll(ScrollView.FOCUS_DOWN);
                 break;
             }
             case R.id.button_del: {
@@ -127,7 +135,26 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                 break;
             }
             case R.id.button_ac: {
+                mResult = "";
+                mResultTextView.setText(mResult);
+                mPreviuos = "";
+                mPreviuosTextView.setText(mPreviuos);
                 mInput = "0";
+                mInputTextView.setText(mInput);
+                break;
+            }
+            case R.id.button_clear: {
+                mInput = "0";
+                mInputTextView.setText(mInput);
+                break;
+            }
+            case R.id.button_pow: {
+                mInput += "^";
+                mInputTextView.setText(mInput);
+                break;
+            }
+            case R.id.button_twozero: {
+                mInput += "00";
                 mInputTextView.setText(mInput);
                 break;
             }
@@ -142,6 +169,16 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
         }
         saveCurrentData();
     }
+
+//    public void scrollToEnd(){
+//        mScrollView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                mScrollView.fullScroll(View.FOCUS_DOWN);
+//            }
+//        });
+//
+//    }
 
     private void saveCurrentData() {
         SharedPreferences message = PreferenceManager.getDefaultSharedPreferences(getActivity());
