@@ -7,8 +7,8 @@ android {
         applicationId "com.nohseunghwa.gallane"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 103
-        versionName "1.03"
+        versionCode 104
+        versionName "1.04"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -26,7 +26,8 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = KidsFragment.class.getSimpleName();
     private TextView mResultTextView;
     private EditText mInputEditText;
-    private String mInputExpression = "";
+    private String mInput = "";
+    private String mResult = "";
     private int mUnit = 0;
     private int mChoice = -1;
     private InputMethodManager imm;
@@ -58,31 +59,52 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
 
         view.findViewById(R.id.calc_button).setOnClickListener(this);
         view.findViewById(R.id.init_button).setOnClickListener(this);
+        view.findViewById(R.id.add_button_at).setOnClickListener(this);
+        view.findViewById(R.id.add_button_bat).setOnClickListener(this);
+        view.findViewById(R.id.add_button_comma).setOnClickListener(this);
+        view.findViewById(R.id.add_button_slash).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        boolean skip = true;
         switch (v.getId()) {
             case R.id.calc_button:
                 calcEditText();
+                skip = false;
                 break;
             case R.id.init_button:
                 initEditText();
+                skip = false;
+                break;
+            case R.id.add_button_at:
+            case R.id.add_button_bat:
+            case R.id.add_button_comma:
+            case R.id.add_button_slash:
+                addKeyboard(v);
                 break;
         }
-        saveCurrentData();
-        imm.hideSoftInputFromWindow(mResultTextView.getWindowToken(), 0);
+        if (!skip) {
+            saveCurrentData();
+            imm.hideSoftInputFromWindow(mResultTextView.getWindowToken(), 0);
+        }
+    }
+
+    private void addKeyboard(View v) {
+        mInput = mInputEditText.getText().toString() + ((TextView) v).getText().toString();
+        mInputEditText.setText(mInput);
+        mInputEditText.setSelection(mInputEditText.length());
     }
 
     private void calcEditText() {
         mInputEditText = (EditText) getView().findViewById(R.id.input_edit_text);
         Galler cal = new Galler(mInputEditText.getText().toString(), getUnit());
-        mInputExpression = cal.getTextResult();
-        mResultTextView.setText(mInputExpression);
+        mResult = cal.getTextResult();
+        mResultTextView.setText(mResult);
     }
 
     private void initEditText() {
-        mInputExpression = "";
+        mResult = "";
         mInputEditText.setText("");
         mResultTextView.setText("");
         mInputEditText.setHint(HINT_EXPRESSION);
@@ -97,14 +119,14 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
     private void saveCurrentData() {
         SharedPreferences message = PreferenceManager.getDefaultSharedPreferences(getActivity());
         SharedPreferences.Editor editor = message.edit();
-        editor.putString(INPUT_EXPRESSION, mInputExpression);
+        editor.putString(INPUT_EXPRESSION, mResult);
         editor.apply();
     }
 
     private void restoreCurrentData() {
         SharedPreferences message = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mInputExpression = message.getString(INPUT_EXPRESSION, "");
-        mResultTextView.setText(mInputExpression);
+        mResult = message.getString(INPUT_EXPRESSION, "");
+        mResultTextView.setText(mResult);
     }
 
     private int getUnit() {
