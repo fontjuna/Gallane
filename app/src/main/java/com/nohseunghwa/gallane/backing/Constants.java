@@ -53,34 +53,6 @@ public class Constants {
     public static final String ERROR_IN_AMOUNT = "금액에 불필요한 문자가 있습니다.";
     public static final String ERROR_IN_DONT_DIVIDE = "금액과 나눌 사람들이 명확하지 않습니다.";
 
-    /***
-     * 똑 같이 나눌경우 (12,000원을 A,B,C 세사람이 분배)
-     * 12000:A,B,C
-     *
-     * 꼴찌한 횟수만큼 내기 (총액 6,000원 게임당 1,000원, A=1회, B=2회, C=3회)
-     * 6000:A,B!2,C!3         (6,000원중 A=1,000원, B=2,000원, C=3,000원)
-     *
-     * 낼 금액이 두가지 이상인 경우("/"로 구분)
-     * 6000:A,B,C/3000:A,D    (A=3,500원, B,C=2,000원, D=1,500원)
-     *
-     * 찬조금액을 빼고 계산할 경우 (총액이 10,000원 이고 찬조금이 1,000원 가정)
-     * 10000-1000:A,B,C       (9,000원중 A,B,C=3,000원)
-     * 9000:A,B,C             (9,000원중 A,B,C=3,000원)
-     *
-     * 특정인이 정해진 금액을 더 낼 경우
-     * 5000-1000:A,B,C/1000:C (5,000원중 C가 1,000원을 더 낸다.| A,B=1,333원,C=2,333원)
-     * 4000:A,B,C/1000:C      (5,000원중 C가 1,000원을 더 낸다.| A,B=1,333원,C=2,333원)
-     * 5000:A,B,C/1000:C      (6,000원중 C가 1,000원을 더 낸다.| A,B=1,667원,C=2,667원)
-     *
-     * 특정인이 정해진 금액만 낼 경우
-     * 5000-1000:A,B/1000:C (5,000원중 C는 1,000원만 낸다.| A,B=2,000원,C=1,000원)
-     * 4000:A,B/1000:C      (5,000원중 C는 1,000원만 낸다.| A,B=2,000원,C=1,000원)
-     *
-     * 특정인이 다른 사람 몫까지 낼 경우 (C의 몫을 다른 사람이 낸다는 가정)
-     * 10000:A,B,C!0,D!2      (10,000원 중 A,B=2,500원, D=5,000원) => 10000:A,B,D!2
-     * 10000:A,B!1.5,C!0,D!1.5(10,000원 중 A=2,500원, B,D=2,750원) => 10000:A,B!1.5,D!1.5
-     */
-
     public static final String HINT_INFORMATION
             = "구분자로   " + TITLEnMONEY +" " + LEFTnRIGHT + " "+MEMBER2MEMBER+"  " + MEMBERnMEMBER + "  " + MEMBERnRATIO + " " + ITEMnITEM + "  6개 문자를 사용합니다"
             + "\n타이틀 " + TITLEnMONEY +" 금액(또는 계산식) " + LEFTnRIGHT + "이름(또는 숫자 "+MEMBER2MEMBER+" 숫자) "
@@ -125,7 +97,10 @@ public class Constants {
             + "\n  또는 9000" + LEFTnRIGHT + "A" + MEMBERnMEMBER + "B" + MEMBERnMEMBER + "C"
             + "\n  (결과 각 3,000원)"
 
-            + "\n\n▣ 더 복잡한 경우도 위의 예를 응용해 보세요";
+            + "\n\n▣ 더 복잡한 경우도 위의 예를 응용해 보세요"
+            + "\n\n▣ 결과는 [가름전달]에서 메세지로 보낼수 있습니다."
+            + "\n\n▣ 계산기를 사용하여 다른 계산도 할 수 있습니다."
+            ;
 
     public static final String CALC_INPUT = "calc_input";
     public static final String CALC_PREVIUOS = "calc_previuos";

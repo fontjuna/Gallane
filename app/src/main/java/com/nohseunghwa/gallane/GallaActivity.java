@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.nohseunghwa.gallane.fragments.CalcFragment;
 import com.nohseunghwa.gallane.fragments.KidsFragment;
 import com.nohseunghwa.gallane.fragments.SendFragment;
@@ -24,10 +26,18 @@ import static com.nohseunghwa.gallane.backing.Constants.TAB_TITLE_3;
 
 public class GallaActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_galla);
+
+        mAdView = (AdView) findViewById(R.id.adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         clearSharedPreference();
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab);

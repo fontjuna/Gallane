@@ -122,7 +122,7 @@
             <Button
                 android:id="@+id/preview_button"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_margin="4dp"
                 android:background="@color/colorButtonFace"
                 android:text="메세지확인"/>
@@ -130,7 +130,7 @@
             <Button
                 android:id="@+id/send_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
                 android:layout_margin="4dp"
                 android:background="@color/colorButtonFace"
                 android:text="보내기"/>
