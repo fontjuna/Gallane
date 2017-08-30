@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import static com.nohseunghwa.gallane.backing.Constants.BRACKET_END;
+import static com.nohseunghwa.gallane.backing.Constants.BRACKET_LEFT;
+import static com.nohseunghwa.gallane.backing.Constants.BRACKET_RIGHT;
 import static com.nohseunghwa.gallane.backing.Constants.BRACKET_START;
 import static com.nohseunghwa.gallane.backing.Constants.CONVERT_FROM;
 import static com.nohseunghwa.gallane.backing.Constants.CONVERT_TO;
+import static com.nohseunghwa.gallane.backing.Constants.MINUS;
+import static com.nohseunghwa.gallane.backing.Constants.PLUS;
+
 
 /**
  * Created by fontjuna on 2017-08-27.
@@ -42,8 +47,12 @@ public class Calculation {
         ArrayList<String> tokenList = new ArrayList<>();
         tokenList = splitByOperator(data);
         //계산호출
-        tokenList = stackCalc(tokenList);
-        if (tokenList.size() < 1) {
+        try {
+            tokenList = stackCalc(tokenList);
+            if (tokenList.size() < 1) {
+                throw new RuntimeException("Calulation Error");
+            }
+        } catch (RuntimeException e) {
             throw new RuntimeException("Calulation Error");
         }
         return tokenList.get(0);
@@ -109,7 +118,7 @@ public class Calculation {
             //괄호위치 찾아본다
             braket = findBracketPosition(tokenList, location);
             ArrayList<String> newTokenList = new ArrayList<>();
-            if (braket[1] < 2) {
+            if (braket[BRACKET_END] < 2) {
                 braket[BRACKET_END] = location + 1;
                 newTokenList.add(tokenList.get(location + 1));
             } else {
@@ -126,6 +135,10 @@ public class Calculation {
 
     private boolean hasSingleOperator(ArrayList<String> tokenList) {
         return (tokenList.contains("√") || tokenList.contains("!"));
+    }
+
+    private boolean isSingleOperator(String operator) {
+        return ("√".equals(operator) || "!".equals(operator));
     }
 
     private ArrayList<String> replaceCenterList(ArrayList<String> tokenList,
@@ -190,12 +203,12 @@ public class Calculation {
         int[] bracketPosition = {-1, -1};
         int bracketCount = 0;
         for (int i = start; i < tokenList.size(); i++) {
-            if ("(".equals(tokenList.get(i))) {
+            if (BRACKET_LEFT.equals(tokenList.get(i))) {
                 bracketCount++;
                 if (bracketPosition[BRACKET_START] < 0) {
                     bracketPosition[BRACKET_START] = i;
                 }
-            } else if (")".equals(tokenList.get(i))) {
+            } else if (BRACKET_RIGHT.equals(tokenList.get(i))) {
                 bracketCount--;
                 if (bracketCount == 0) {
                     bracketPosition[BRACKET_END] = i;
@@ -212,14 +225,22 @@ public class Calculation {
         String digits = "";
         for (int i = 0; i < data.length(); i++) {
             if (isDigitOrDot(data.charAt(i))) {
+                // 수 라면
                 digits += data.substring(i, i + 1);
             } else {
-                if (digits.isEmpty() && ( "-".equals(data.substring(i, i + 1)) ||"+".equals(data.substring(i, i + 1)))) {
-                    digits += data.substring(i, i + 1);
-                } else {
-                    if (!digits.isEmpty()) {
-                        tokenList.add(digits);
+                // 수가 아니라면
+                if (digits.isEmpty()) {
+                    // 처음 이거나, 앞이 숫자가 아니었음(연산자)
+                    if ((MINUS.equals(data.substring(i, i + 1)) || PLUS.equals(data.substring(i, i + 1))) &&
+                            !tokenList.isEmpty() && isSingleOperator((String) tokenList.get(tokenList.size() - 1))) {
+                        // 부호이거나 (이 경우 숫자에 포함)
+                        digits += data.substring(i, i + 1);
+                    } else {
+                        tokenList.add(data.substring(i,i+1));
                     }
+                } else {
+                    // 숫자가 있으므로 숫자 저장과 연산자 저장
+                    tokenList.add(digits);
                     tokenList.add(data.substring(i, i + 1));
                     digits = "";
                 }
@@ -229,6 +250,20 @@ public class Calculation {
             tokenList.add(digits);
         }
         return tokenList;
+    }
+
+    private boolean isSign(String operator, String preOperator) {
+        boolean isSign = false;
+        if ("+-".contains(operator)) {
+            if ("√()*/+-".contains(preOperator)) {
+                isSign = true;
+            } else {
+                throw new RuntimeException("Calculate Error");
+            }
+        } else if ("*/".contains(operator)) {
+        }
+
+        return isSign;
     }
 
     // 숫자 계산
@@ -254,34 +289,27 @@ public class Calculation {
         } else if ("√".equals(opcode)) {
             //루트
             return Math.sqrt(op1);
-        } else if ("!".equals(opcode)) {
+ /*       } else if ("!".equals(opcode)) {
             //팩토리얼
             return factorial(op1);
-        }
+*/        }
         throw new RuntimeException("Operation Error");
     }
 
+/*
     private double factorial(double input) {
         if (input == 1.0) {
             return 1.0;
         }
         return factorial(input - 1) * input;
     }
+*/
 
     /****************************************************/
     private String recursiveCalc(String data) {
-        // 계산 끝이면 종료
-//        if (Pattern.matches("^[0-9.]*$", data)) {
-//        if (calculateDone(data)) {
-//            return data;
-//        }
-
-        // 남았으면 계산
-
         //괄호가 있으면 제일 바깥쪽 괄호 부터 추출해서 다시 호출
         if (data.contains("(")) {
             // 제일 처음 계산할 괄호 추출
-//            data = calcUseBracket(data);
             int bracketStart = -1;
             int bracketEnd = -1;
             int bracketCount = 0;

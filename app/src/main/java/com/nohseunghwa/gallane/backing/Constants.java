@@ -8,24 +8,6 @@ public class Constants {
 
     /**
      * Created by fontjuna on 2017-08-15.
-     * <p>
-     * 아이템즈 ( 아이템 / 아이템 )
-     * 아이템 ( 레프트아이템 @ 라이트아이템 )
-     * 레프트아이템 ( 타이틀 : 금액들 )
-     * 금액들 ( 금액 + [-]금액 )
-     * 라이트아이템 ( 멤버들 , 멤버 )
-     * 멤버들 ( 멤버 , 멤버 )
-     * 멤버 ( 멤버 ! 배율 )
-     * <p>
-     * <p>
-     * 아이템(= 레프트( = 타이틀 : 금액들( = 금액 + 금액 ) @ 라이트 ) / 아이템
-     * <p>
-     * '/' 그룹과 그룹 구분
-     * '=' 그룹에서 그룹명칭과 내용 구분
-     * ':' 내용에서 금액과 구성멤버 구분
-     * ',' 구성멤버에서 멤버와 멤버 구분
-     * '!' 멤버에서 멤버와 멤버의 비중 구분
-     * '~' 숫자와 숫자사이에 써서 이름대신 순번으로 대치 1~10 (1부터 10까지 10명)
      */
 
     // 계산용
@@ -36,9 +18,8 @@ public class Constants {
     public static final String CALC = PLUS + MINUS + DOT + COMMA;
 
     // 구분자 용
-    public static final String UNIT = "#UNIT#";
-    public static final String ITEMnITEM = "/";
-    public static final String TITLEnMONEY = ":";
+    public static final String ITEMnITEM = "&";
+    public static final String TITLEnMONEY = "=";
     public static final String MEMBER2MEMBER = "~";
     public static final String LEFTnRIGHT = "@";
     public static final String MEMBERnMEMBER = ",";
@@ -101,10 +82,15 @@ public class Constants {
      */
 
     public static final String HINT_INFORMATION
-            = "구분자로   " + LEFTnRIGHT + "   " + MEMBERnMEMBER + "   " + MEMBERnRATIO + "   " + ITEMnITEM + "  4개 문자를 사용합니다"
+            = "구분자로   " + TITLEnMONEY +" " + LEFTnRIGHT + " "+MEMBER2MEMBER+"  " + MEMBERnMEMBER + "  " + MEMBERnRATIO + " " + ITEMnITEM + "  6개 문자를 사용합니다"
+            + "\n타이틀 " + TITLEnMONEY +" 금액(또는 계산식) " + LEFTnRIGHT + "이름(또는 숫자 "+MEMBER2MEMBER+" 숫자) "
+            + MEMBERnRATIO + " 배율 "  + MEMBERnMEMBER + " 이름 ... "+ ITEMnITEM + "기호 이후 패턴 반복"
 
             + "\n\n▣ 똑 같이 나눌 때( '" + LEFTnRIGHT + "' 로 금액과 사람 구분)"
             + "\n  입력 12000" + LEFTnRIGHT + "A" + MEMBERnMEMBER + "B" + MEMBERnMEMBER + "C (결과 A,B,C=4,000원)"
+
+            + "\n\n▣ 똑 같이 나눌 때( '" + MEMBER2MEMBER + "' 로 사람들 지정)"
+            + "\n  입력 12000" + LEFTnRIGHT + "1" + MEMBER2MEMBER +  "3 (결과 1,2,3=4,000원)"
 
             + "\n\n▣ 꼴찌한 횟수 만큼 낼때( '" + MEMBERnRATIO + "' 뒤에 횟수(배율))"
             + "\n  입력 12000" + LEFTnRIGHT + "A" + MEMBERnMEMBER + "B" + MEMBERnRATIO + "2" + MEMBERnMEMBER + "C" + MEMBERnRATIO + "3 (" + MEMBERnRATIO + "1 은 없어도 같음)"
@@ -144,7 +130,7 @@ public class Constants {
     public static final String CALC_INPUT = "calc_input";
     public static final String CALC_PREVIUOS = "calc_previuos";
     public static final String CALC_RESULT = "calc_result";
-    public static final String HINT_EXPRESSION = "금액" + LEFTnRIGHT + "이름" + MEMBERnRATIO + "배율" + MEMBERnMEMBER + "...";
+    public static final String HINT_EXPRESSION = "타이틀" + TITLEnMONEY + "금액" + LEFTnRIGHT + "이름" + MEMBERnRATIO + "배율" + MEMBERnMEMBER + "...";
     public static final String INPUT_EXPRESSION = "input_expression";
     public static final String NO_BANKING = "\n\n(이 내용은 메세지에서 제외 됩니다."
             + "\n계좌 정보를 같이 보내시려면"
@@ -156,14 +142,18 @@ public class Constants {
     public static final String TAB_TITLE_3 = "계 산 기";
 
     //음수 연산 및 괄호앞 * 생략 처리
-    public static final String[] CONVERT_FROM = {"-(", "0(", "1(", "2(", "3(", "4(", "5(", "6(", "7(", "8(", "9(",
+    public static final String[] CONVERT_FROM = {
             "--", "+-", "-+", "++",
-            "(-0", "(-1", "(-2", "(-3", "(-4", "(-5", "(-6", "(-7", "(-8", "(-9",
-            "0√", "1√", "2√", "3√", "4√", "5√", "6√", "7√", "8√", "9√"};
-    public static final String[] CONVERT_TO = {"-1*(", "0*(", "1*(", "2*(", "3*(", "4*(", "5*(", "6*(", "7*(", "8*(", "9*(",
+            "0√", "1√", "2√", "3√", "4√", "5√", "6√", "7√", "8√", "9√", //"+√", "-√", //"√-", "√+" -> 이거 안됨 "√0+"가 되면 0+나 마찬가지
+            "0(", "1(", "2(", "3(", "4(", "5(", "6(", "7(", "8(", "9(", "(-", "(+", //"+(", "-(",
+//            "(-0", "(-1", "(-2", "(-3", "(-4", "(-5", "(-6", "(-7", "(-8", "(-9",
+    };
+    public static final String[] CONVERT_TO = {
             "+", "-", "-", "+",
-            "(0-1*0", "(0-1*1", "(0-1*2", "(0-1*3", "(0-1*4", "(0-1*5", "(0-1*6", "(0-1*7", "(0-1*8", "(0-1*9",
-            "0*√", "1*√", "2*√", "3*√", "4*√", "5*√", "6*√", "7*√", "8*√", "9*√"};
+            "0*√", "1*√", "2*√", "3*√", "4*√", "5*√", "6*√", "7*√", "8*√", "9*√", //"+1*√", "-1*√", //"√0-", "√0+"
+            "0*(", "1*(", "2*(", "3*(", "4*(", "5*(", "6*(", "7*(", "8*(", "9*(", "(0-", "(0+",//"+1*(", "-1*(",
+//            "(0-1*0", "(0-1*1", "(0-1*2", "(0-1*3", "(0-1*4", "(0-1*5", "(0-1*6", "(0-1*7", "(0-1*8", "(0-1*9",
+    };
     //연산자가 아닌 기호
     public static final String[] BRACKET = {"(", ")", ","};
     //수 한 개가 필요한 연산기호(수는 왼쪽에 배치)
@@ -183,4 +173,7 @@ public class Constants {
 
     public static final int BRACKET_START = 0;
     public static final int BRACKET_END = 1;
+
+    public static final String BRACKET_LEFT = "(";
+    public static final String BRACKET_RIGHT = ")";
 }

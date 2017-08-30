@@ -15,11 +15,17 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.nohseunghwa.gallane.R;
-import com.nohseunghwa.gallane.backing.Galler;
+import com.nohseunghwa.gallane.backing.Spliter;
 
 import static com.nohseunghwa.gallane.backing.Constants.HINT_EXPRESSION;
 import static com.nohseunghwa.gallane.backing.Constants.HINT_INFORMATION;
 import static com.nohseunghwa.gallane.backing.Constants.INPUT_EXPRESSION;
+import static com.nohseunghwa.gallane.backing.Constants.ITEMnITEM;
+import static com.nohseunghwa.gallane.backing.Constants.LEFTnRIGHT;
+import static com.nohseunghwa.gallane.backing.Constants.MEMBER2MEMBER;
+import static com.nohseunghwa.gallane.backing.Constants.MEMBERnMEMBER;
+import static com.nohseunghwa.gallane.backing.Constants.MEMBERnRATIO;
+import static com.nohseunghwa.gallane.backing.Constants.TITLEnMONEY;
 
 public class KidsFragment extends Fragment implements View.OnClickListener {
 
@@ -54,15 +60,31 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         mInputEditText = (EditText) getView().findViewById(R.id.input_edit_text);
+        mInputEditText.setHint(HINT_EXPRESSION);
         mResultTextView = (TextView) view.findViewById(R.id.result_text_view);
         mResultTextView.setHint(HINT_INFORMATION);
 
         view.findViewById(R.id.calc_button).setOnClickListener(this);
         view.findViewById(R.id.init_button).setOnClickListener(this);
-        view.findViewById(R.id.add_button_at).setOnClickListener(this);
-        view.findViewById(R.id.add_button_bat).setOnClickListener(this);
-        view.findViewById(R.id.add_button_comma).setOnClickListener(this);
-        view.findViewById(R.id.add_button_slash).setOnClickListener(this);
+
+        TextView leftNrightText = view.findViewById(R.id.add_button_at);
+        leftNrightText.setOnClickListener(this);
+        leftNrightText.setText(LEFTnRIGHT);
+        TextView memberNratioText = view.findViewById(R.id.add_button_bat);
+        memberNratioText.setOnClickListener(this);
+        memberNratioText.setText(MEMBERnRATIO);
+        TextView memberNmemberText = view.findViewById(R.id.add_button_comma);
+        memberNmemberText.setOnClickListener(this);
+        memberNmemberText.setText(MEMBERnMEMBER);
+        TextView itemNitemText = view.findViewById(R.id.add_button_slash);
+        itemNitemText.setOnClickListener(this);
+        itemNitemText.setText(ITEMnITEM);
+        TextView titleNmoneyText = view.findViewById(R.id.add_button_menu);
+        titleNmoneyText.setOnClickListener(this);
+        titleNmoneyText.setText(TITLEnMONEY);
+        TextView member2memberText = view.findViewById(R.id.add_button_through);
+        member2memberText.setOnClickListener(this);
+        member2memberText.setText(MEMBER2MEMBER);
     }
 
     @Override
@@ -81,6 +103,8 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
             case R.id.add_button_bat:
             case R.id.add_button_comma:
             case R.id.add_button_slash:
+            case R.id.add_button_menu:
+            case R.id.add_button_through:
                 addKeyboard(v);
                 break;
         }
@@ -98,8 +122,10 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
 
     private void calcEditText() {
         mInputEditText = (EditText) getView().findViewById(R.id.input_edit_text);
-        Galler cal = new Galler(mInputEditText.getText().toString(), getUnit());
-        mResult = cal.getTextResult();
+//        Galler cal = new Galler(mInputEditText.getText().toString(), getUnit());
+//        mResult = cal.getTextResult();
+        Spliter spliter = new Spliter(mInputEditText.getText().toString(), getUnit());
+        mResult = spliter.getResult();
         mResultTextView.setText(mResult);
     }
 
