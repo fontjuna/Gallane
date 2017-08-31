@@ -1,5 +1,6 @@
 package com.nohseunghwa.gallane;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,6 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -19,6 +25,7 @@ import com.nohseunghwa.gallane.fragments.SendFragment;
 import static com.nohseunghwa.gallane.backing.Constants.CALC_INPUT;
 import static com.nohseunghwa.gallane.backing.Constants.CALC_PREVIUOS;
 import static com.nohseunghwa.gallane.backing.Constants.CALC_RESULT;
+import static com.nohseunghwa.gallane.backing.Constants.HINT_INFORMATION;
 import static com.nohseunghwa.gallane.backing.Constants.INPUT_EXPRESSION;
 import static com.nohseunghwa.gallane.backing.Constants.TAB_TITLE_0;
 import static com.nohseunghwa.gallane.backing.Constants.TAB_TITLE_2;
@@ -75,6 +82,31 @@ public class GallaActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_gallane, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.help_gallane, null, false);
+        ((TextView) view.findViewById(R.id.help_text)).setText(HINT_INFORMATION);
+        builder.setView(view);
+        final AlertDialog dialog = builder.create();
+        view.findViewById(R.id.button_clear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        return true;
+    }
+
     private void clearSharedPreference() {
         SharedPreferences message = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = message.edit();
@@ -89,7 +121,7 @@ public class GallaActivity extends AppCompatActivity {
 
         public static final int PAGE_NUM = 3;
         private KidsFragment mKidsFragment;
-//        private PapaFragment mPapaFragment;
+        //        private PapaFragment mPapaFragment;
         private SendFragment mSendFragment;
         private CalcFragment mCalcFragment;
 
