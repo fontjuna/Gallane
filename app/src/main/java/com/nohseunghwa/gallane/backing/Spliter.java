@@ -85,7 +85,7 @@ public class Spliter {
         for (String key : mFinal.keySet()) {
             intVal = ((int) (mFinal.get(key) + mUnit * 0.9) / mUnit) * mUnit;
             gather += intVal;
-            member += key + " : " + intVal + "\n";
+            member += key + " : " + df.format(intVal) + "\n";
         }
         mResult = mFinal.getTitle() + " :\n"
                 + "총 금 액 : " + df.format((int) (mFinal.getAmount())) + "\n"

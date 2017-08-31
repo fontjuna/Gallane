@@ -66,6 +66,16 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
 
         view.findViewById(R.id.calc_button).setOnClickListener(this);
         view.findViewById(R.id.init_button).setOnClickListener(this);
+        view.findViewById(R.id.add_button_0).setOnClickListener(this);
+        view.findViewById(R.id.add_button_1).setOnClickListener(this);
+        view.findViewById(R.id.add_button_2).setOnClickListener(this);
+        view.findViewById(R.id.add_button_3).setOnClickListener(this);
+        view.findViewById(R.id.add_button_4).setOnClickListener(this);
+        view.findViewById(R.id.add_button_5).setOnClickListener(this);
+        view.findViewById(R.id.add_button_6).setOnClickListener(this);
+        view.findViewById(R.id.add_button_7).setOnClickListener(this);
+        view.findViewById(R.id.add_button_8).setOnClickListener(this);
+        view.findViewById(R.id.add_button_9).setOnClickListener(this);
 
         TextView leftNrightText = view.findViewById(R.id.add_button_at);
         leftNrightText.setOnClickListener(this);
@@ -99,12 +109,7 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
                 initEditText();
                 skip = false;
                 break;
-            case R.id.add_button_at:
-            case R.id.add_button_bat:
-            case R.id.add_button_comma:
-            case R.id.add_button_slash:
-            case R.id.add_button_menu:
-            case R.id.add_button_through:
+            default:
                 addKeyboard(v, ((TextView) v).getText().toString());
                 break;
         }
@@ -122,6 +127,7 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
         String right = mInput.substring(end);
         mInput = left + key + right;
         mInputEditText.setText(mInput);
+        mInputEditText.setSelection(end+1);
     }
 
     private void calcEditText() {
