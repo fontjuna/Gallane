@@ -114,8 +114,8 @@ public class SendFragment extends Fragment {
         boolean yn = (name.isEmpty() || bank.isEmpty() || account.isEmpty());
 
         String message = (yn ? append ? NO_BANKING : "" :
-                "\n\n입금 계좌 참고 하세요 ^_^"
-                        + "\n예금주 : " + name + "\n은행명 : "
+                "\n\n▣ 입금 계좌"
+                        + "\n예 금 주 : " + name + "\n은 행 명 : "
                         + bank + "\n계좌번호 : " + account);
 
         return message;
