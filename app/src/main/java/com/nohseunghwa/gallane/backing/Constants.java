@@ -107,9 +107,10 @@ public class Constants {
     public static final String CALC_RESULT = "calc_result";
     public static final String HINT_EXPRESSION = "타이틀" + TITLEnMONEY + "금액" + LEFTnRIGHT + "이름" + MEMBERnRATIO + "배율" + MEMBERnMEMBER + "...";
     public static final String INPUT_EXPRESSION = "input_expression";
-    public static final String NO_BANKING = "\n\n(이 내용은 메세지에서 제외 됩니다."
-            + "\n계좌 정보를 같이 보내시려면"
-            + "\n예금주, 은행명, 계좌번호가 있어야 합니다.)";
+    public static final String NO_BANKING = "\n\n(참고 :"
+            + "\n예금주, 은행명, 계좌번호가 모두 있으면"
+            + "\n계좌 정보가 덧붙여 보내 집니다.)"
+            ;
 
     public static final String TAB_TITLE_0 = "가를것들";
     public static final String TAB_TITLE_1 = "쉬운가름";

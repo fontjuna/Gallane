@@ -9,8 +9,19 @@ import java.util.Scanner;
  */
 
 public class TestMain {
-    public static void main(String[] args) {
+    public void main(String[] args) {
+        int go = 2;
+        switch (go){
+            case 1: test1();
+            case 2: test2();
+        }
+    }
 
+    private void test2() {
+
+    }
+    private void test1() {
+        // 반복 입력 받으면서 갈라내 입력창 테스트
         Scanner sc = new Scanner(System.in);
         String input;
 
@@ -20,7 +31,7 @@ public class TestMain {
                 break;
             }
             try {
-                Spliter spliter= new Spliter(input, 1);
+                Spliter spliter = new Spliter(input, 1);
                 System.out.println(input + " = \n" + spliter.getResult());
             } catch (Exception e) {
                 System.out.println(input + " = " + "error!");

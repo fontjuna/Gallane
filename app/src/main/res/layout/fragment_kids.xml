@@ -15,17 +15,6 @@
 
         <include layout="@layout/assistance_line_accent"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorButtonFace"
-            android:padding="4dp"
-            android:text="계산 단위"/>
-
-        <include layout="@layout/assistance_unit_limit"/>
-
-        <include layout="@layout/assistance_line_accent"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -127,6 +116,17 @@
         </ScrollView>
 
         <include layout="@layout/assistance_line_accent"></include>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorButtonFace"
+            android:padding="4dp"
+            android:text="계산 단위"/>
+
+        <include layout="@layout/assistance_unit_limit"/>
+
+        <include layout="@layout/assistance_line_accent"/>
 
         <TextView
             android:id="@+id/information_text_view"

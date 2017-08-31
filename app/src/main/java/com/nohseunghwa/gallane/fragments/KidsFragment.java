@@ -105,7 +105,7 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
             case R.id.add_button_slash:
             case R.id.add_button_menu:
             case R.id.add_button_through:
-                addKeyboard(v);
+                addKeyboard(v, ((TextView) v).getText().toString());
                 break;
         }
         if (!skip) {
@@ -114,10 +114,14 @@ public class KidsFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void addKeyboard(View v) {
-        mInput = mInputEditText.getText().toString() + ((TextView) v).getText().toString();
+    private void addKeyboard(View v, String key) {
+        int start = mInputEditText.getSelectionStart();
+        int end = mInputEditText.getSelectionEnd();
+        mInput = mInputEditText.getText().toString();
+        String left = mInput.substring(0, start);
+        String right = mInput.substring(end);
+        mInput = left + key + right;
         mInputEditText.setText(mInput);
-        mInputEditText.setSelection(mInputEditText.length());
     }
 
     private void calcEditText() {
