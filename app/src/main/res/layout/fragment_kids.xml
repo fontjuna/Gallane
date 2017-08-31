@@ -22,15 +22,6 @@
             android:layout_height="wrap_content"
             android:background="@color/colorButtonFace">
 
-            <!--<TextView-->
-            <!--android:id="@+id/input_text_view"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@color/colorButtonFace"-->
-            <!--android:padding="4dp"-->
-            <!--android:text="대상 입력"/>-->
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -316,6 +307,7 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:background="#ffffff"
                 android:id="@+id/input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

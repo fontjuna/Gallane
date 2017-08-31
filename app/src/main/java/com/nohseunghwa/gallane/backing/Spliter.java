@@ -54,7 +54,13 @@ public class Spliter {
         intializeData();
         confirmData();
         if (!isError()) {
-            splitData();
+            try {
+                splitData();
+            } catch (Exception e) {
+                mError = true;
+                mResult = ERROR_INVALID;
+//                throw new RuntimeException("Calculate Error");
+            }
         }
     }
 
@@ -144,13 +150,21 @@ public class Spliter {
                 mResult = ERROR_IN_DONT_DIVIDE;
             } else {
                 try {
-                    amount = parseDouble(Calculation.Calculate(tokenList.get(position - 1)));
+                    if (Pattern.matches("^[0-9^().*/+-]*$", tokenList.get(position - 1))) {
+                        amount = parseDouble(Calculation.Calculate(tokenList.get(position - 1)));
+                    } else {
+                        mError = true;
+                        mResult = ERROR_INVALID;
+                    }
                 } catch (RuntimeException e) {
-                    mError = true;
-                    mResult = ERROR_INVALID;
+                    throw new RuntimeException("Calculate Error");
                 }
                 if (Pattern.matches(VALID_CHARACTERS_MEMBER, tokenList.get(position + 1))) {
-                    ratio = makeMemberAndRatio(tokenList.get(position + 1));
+                    try {
+                        ratio = makeMemberAndRatio(tokenList.get(position + 1));
+                    } catch (Exception e) {
+                        throw new RuntimeException("Calculate Error");
+                    }
                 } else {
                     mError = true;
                     mResult = ERROR_IN_MEMBER;
@@ -180,6 +194,11 @@ public class Spliter {
                     fromTo = element[0].split(MEMBER2MEMBER);
                     nFrom = Integer.parseInt(fromTo[0]);
                     nTo = Integer.parseInt(fromTo[1]);
+                    if (nFrom > nTo) {
+                        int temp = nFrom;
+                        nFrom = nTo;
+                        nTo = temp;
+                    }
                     for (int j = nFrom; j <= nTo; j++) {
                         element = splitElement(j + sRate);
                         rate = 0.0;
