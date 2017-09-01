@@ -60,13 +60,15 @@ public class Calculation {
 
     //계산 시작
     private ArrayList<String> stackCalc(ArrayList<String> tokenList) {
-        String[] singleOp = {"√", "!"};
-        ArrayList<String> resultList = new ArrayList<>();
-        if (hasSingleOperator(tokenList)) {
-            for (String op : singleOp) {
-                tokenList = calcSingleOperator(tokenList, op);
-            }
+        // 첫문자가 "0-9,(,√,+,-"이외는 에러
+        if (!Pattern.matches("^[0-9(√+-]*$", tokenList.get(0).substring(0, 1))) {
+            throw new RuntimeException("Calculate Error");
         }
+        ArrayList<String> resultList = new ArrayList<>();
+
+//        // "√, !"의 싱글 오퍼레이터 검사 및 계산
+//        tokenList = checkAncCalcSingleOperator(tokenList);
+
         if (tokenList.contains("(")) {
             int[] bracketPosition = findBracketPosition(tokenList, 0);
             // 괄호안에 데이타가 있다면
@@ -76,13 +78,19 @@ public class Calculation {
             } else {
                 //있으면
                 ArrayList<String> centerList = new ArrayList<>();
+                // 괄호안의 token만 담는다
                 for (int i = bracketPosition[BRACKET_START] + 1; i < bracketPosition[BRACKET_END]; i++) {
                     centerList.add(tokenList.get(i));
                 }
+                // 괄호 안의 token 만 계산시킴
                 centerList = stackCalc(centerList);
+                //괄호가 다 없어지면 괄호 이전 token 과 괄호안의 계산 결과와 괄호 이후 token을 합침
                 resultList = replaceCenterList(tokenList, bracketPosition[BRACKET_START], bracketPosition[BRACKET_END], centerList);
             }
         } else {
+            // "√, !"의 싱글 오퍼레이터 검사 및 계산
+            tokenList = checkAncCalcSingleOperator(tokenList);
+            // 연산자 우선 순위 위치 파악 및 계산
             int calcPosition = findCalcPosition(tokenList);
             if (calcPosition > 0) {
                 double value = calculateByOpCode(
@@ -93,6 +101,7 @@ public class Calculation {
                 tokenList.set(calcPosition, "");
                 tokenList.set(calcPosition + 1, "");
             }
+            // 데이타가 남은 token만 다시 리스트에 담는다.
             for (String s : tokenList) {
                 if (!s.isEmpty()) {
                     resultList.add(s);
@@ -101,10 +110,22 @@ public class Calculation {
         }
 
         if (resultList.size() <= 1) {
+            // 계산이 끝났다면 리스트의 갯수는 1
             return resultList;
         } else {
+            // 아니면 다시 계산 시킴
             return stackCalc(resultList);
         }
+    }
+
+    private ArrayList<String> checkAncCalcSingleOperator(ArrayList<String> tokenList) {
+        String[] singleOp = {"√", "!"};
+        if (hasSingleOperator(tokenList)) {
+            for (String op : singleOp) {
+                tokenList = calcSingleOperator(tokenList, op);
+            }
+        }
+        return tokenList;
     }
 
     private ArrayList<String> calcSingleOperator(ArrayList<String> tokenList, String op) {
@@ -236,7 +257,7 @@ public class Calculation {
                         // 부호이거나 (이 경우 숫자에 포함)
                         digits += data.substring(i, i + 1);
                     } else {
-                        tokenList.add(data.substring(i,i+1));
+                        tokenList.add(data.substring(i, i + 1));
                     }
                 } else {
                     // 숫자가 있으므로 숫자 저장과 연산자 저장
@@ -292,7 +313,8 @@ public class Calculation {
  /*       } else if ("!".equals(opcode)) {
             //팩토리얼
             return factorial(op1);
-*/        }
+*/
+        }
         throw new RuntimeException("Operation Error");
     }
 
@@ -306,159 +328,6 @@ public class Calculation {
 */
 
     /****************************************************/
-    private String recursiveCalc(String data) {
-        //괄호가 있으면 제일 바깥쪽 괄호 부터 추출해서 다시 호출
-        if (data.contains("(")) {
-            // 제일 처음 계산할 괄호 추출
-            int bracketStart = -1;
-            int bracketEnd = -1;
-            int bracketCount = 0;
-            for (int i = 0; i < data.length(); i++) {
-                if ("(".equals(data.substring(i, i + 1))) {
-                    bracketCount++;
-                    if (bracketStart < 0) {
-                        bracketStart = i;
-                    }
-                } else if (")".equals(data.substring(i, i + 1))) {
-                    bracketCount--;
-                    if (bracketCount == 0) {
-                        bracketEnd = i;
-                        break;
-                    }
-                }
-            }
-
-            // 괄호안에 데이타가 있다면
-            if (bracketEnd < bracketStart - 2) {
-                //없으면
-                throw new RuntimeException("Calculation Error");
-            } else {
-                //있으면
-                String leftData = data.substring(0, bracketStart); //왼쪽괄호제거
-                String rightData = data.substring(bracketEnd + 1); //오른쪽괄호제거
-                String centerData = recursiveCalc(data.substring(bracketStart + 1, bracketEnd));
-
-                data = leftData + centerData + rightData;
-            }
-        }
-        //괄호가 없으면 계산
-        data = calcNonBracket(data);
-
-        return data;
-    }
-
-    private String calcNonBracket(String data) {
-        String leftData = "";
-        String rightData = "";
-        String op1 = "";
-        String op2 = "";
-        int firstRun = getFirstRun(data);
-        if (firstRun > 0) { // 연산자가 남아 있다면
-            leftData = splitData(data, firstRun, -1, false);
-            rightData = splitData(data, firstRun, 1, false);
-            op1 = splitData(data, firstRun, -1, true);
-            op2 = splitData(data, firstRun, 1, true);
-            double value = calculateByOpCode(
-                    Double.parseDouble(op1),
-                    Double.parseDouble(op2),
-                    data.substring(firstRun, firstRun + 1));
-            data = leftData +
-                    String.valueOf(value) +
-                    rightData;
-        }
-        if (calculateDone(data)) {
-            return data;
-        } else {
-            return calcNonBracket(data);
-        }
-    }
-
-
-    // 계산 우선 순위를 반영하여 첫번째 연산할 위치 검색
-    private int getFirstRun(String data) {
-        int firstRun = -1;
-        int level = -1;
-        String oneChar;
-        for (int i = 0; i < data.length(); i++) {
-            oneChar = data.substring(i, i + 1);
-            if ("^".equals(oneChar)) {
-                if (level < 2) {
-                    level = 2;
-                    firstRun = i;
-                }
-            } else if ("*".equals(oneChar)) {
-                if (level < 1) {
-                    level = 1;
-                    firstRun = i;
-                }
-            } else if ("/".equals(oneChar)) {
-                if (level < 1) {
-                    level = 1;
-                    firstRun = i;
-                }
-            } else if ("%".equals(oneChar)) {
-                if (level < 1) {
-                    level = 1;
-                    firstRun = i;
-                }
-            } else if ("+".equals(oneChar)) {
-                if (level < 0) {
-                    level = 0;
-                    firstRun = i;
-                }
-            } else if ("-".equals(oneChar)) {
-                if (level < 0) {
-                    level = 0;
-                    firstRun = i;
-                }
-            }
-        }
-        return firstRun;
-    }
-
-    // position을 기준으로 문자열을 돌려준다.
-    private String splitData(String data, int position, int inc, boolean isTarget) {
-        int current = position;
-        String newData = "";
-        while (true) {
-            current += inc;
-            if (current < 0 || current > data.length() - 1) {
-                break;
-            }
-            if (isDigitOrDot(data.charAt(current))) {
-                if (inc > 0) {
-                    newData += data.substring(current, current + 1);
-                } else {
-                    newData = data.substring(current, current + 1) + newData;
-                }
-            } else {
-                break;
-            }
-        }
-        if (!isTarget) { // false 이면 추출하고 남은 문자열을 돌려 준다
-            if (inc > 0) {
-                newData = data.substring(current);
-            } else {
-                newData = data.substring(0, current + 1);
-            }
-        }
-        return newData;
-    }
-
-    // 계산이 끝났는가?
-    private boolean calculateDone(String data) {
-        boolean result;
-        if (Pattern.matches("^[0-9.]*$", data)) {
-            result = true;
-        } else if ("-".equals(data.substring(0, 1)) &&
-                Pattern.matches("^[0-9.]*$", data.substring(1))) {
-            result = true;
-        } else {
-            result = false;
-        }
-        return result;
-    }
-
     // 숫자 및 점 이외는 false
     private boolean isDigitOrDot(char token) {
         return (Character.isDigit(token) || token == 46);  // 46 = dot

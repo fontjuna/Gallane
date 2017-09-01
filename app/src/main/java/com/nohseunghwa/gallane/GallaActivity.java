@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.nohseunghwa.gallane.fragments.CalcFragment;
 import com.nohseunghwa.gallane.fragments.KidsFragment;
 import com.nohseunghwa.gallane.fragments.SendFragment;
@@ -41,6 +42,10 @@ public class GallaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_galla);
+
+
+        MobileAds.initialize(this, "ca-app-pub-3056892491225323~4989059619");
+
 
         mAdView = (AdView) findViewById(R.id.adview);
         AdRequest adRequest = new AdRequest.Builder().build();
