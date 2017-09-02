@@ -44,12 +44,12 @@ public class GallaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_galla);
 
 
-        MobileAds.initialize(this, "ca-app-pub-3056892491225323~4989059619");
-
+        MobileAds.initialize(this, "ca-app-pub-3056892491225323/7475622155");
 
         mAdView = (AdView) findViewById(R.id.adview);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+
 
         clearSharedPreference();
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab);
