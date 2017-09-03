@@ -105,11 +105,13 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        String input;
         switch (view.getId()) {
             case R.id.button_go: {
                 try {
-//                    BigDecimal val = Calculator.Calculate(mInput);
-                    double val = Double.parseDouble(Calculation.Calculate(mInput));
+                    input=mInput.replace("×","*");
+                    input=input.replace("÷","/");
+                    double val = Double.parseDouble(Calculation.Calculate(input));
                     mResult = (mResult + "\n" + mPreviuos).trim();
                     mResultTextView.setText(mResult);
                     mPreviuos = mInput + " = " + df.format(val);
@@ -153,11 +155,11 @@ public class CalcFragment extends Fragment implements View.OnClickListener {
                 mInputTextView.setText(mInput);
                 break;
             }
-            case R.id.button_twozero: {
-                mInput += "00";
-                mInputTextView.setText(mInput);
-                break;
-            }
+//            case R.id.button_twozero: {
+//                mInput += "00";
+//                mInputTextView.setText(mInput);
+//                break;
+//            }
             default: {
                 if (mInput.equals("0")) {
                     mInput = "";

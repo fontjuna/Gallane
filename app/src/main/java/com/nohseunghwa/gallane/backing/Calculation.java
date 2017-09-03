@@ -38,12 +38,8 @@ public class Calculation {
 
     // 내부에서 불리는 계산 함수
     private String excute(String data) {
-        //공백제거 필요한 치환
+        //공백제거 필요한 부분 치환, 검사
         data = prepareData(data);
-        //괄호 쌍과 데이타 끝을 검사 (데이타 끝은 숫자이거나 오른쪽 괄호이어야 함)
-        if (!checkBracketPair(data)) {
-            throw new RuntimeException("Calculation Error");
-        }
         ArrayList<String> tokenList = new ArrayList<>();
         tokenList = splitByOperator(data);
         //계산호출
@@ -65,10 +61,6 @@ public class Calculation {
             throw new RuntimeException("Calculate Error");
         }
         ArrayList<String> resultList = new ArrayList<>();
-
-//        // "√, !"의 싱글 오퍼레이터 검사 및 계산
-//        tokenList = checkAncCalcSingleOperator(tokenList);
-
         if (tokenList.contains("(")) {
             int[] bracketPosition = findBracketPosition(tokenList, 0);
             // 괄호안에 데이타가 있다면
@@ -120,8 +112,8 @@ public class Calculation {
 
     private ArrayList<String> checkAncCalcSingleOperator(ArrayList<String> tokenList) {
         String[] singleOp = {"√", "!"};
-        if (hasSingleOperator(tokenList)) {
-            for (String op : singleOp) {
+        for (String op : singleOp) {
+            while (hasSingleOperator(tokenList)) {
                 tokenList = calcSingleOperator(tokenList, op);
             }
         }
@@ -131,35 +123,46 @@ public class Calculation {
     private ArrayList<String> calcSingleOperator(ArrayList<String> tokenList, String op) {
         ArrayList<String> resultList = new ArrayList<>();
         int location = -1;
-        int[] braket = {-1, -1};
+        double value = 0.0;
 
         // 연산자 위치 찾아온다
         location = tokenList.indexOf(op);
         if (location > -1) {
-            //괄호위치 찾아본다
-            braket = findBracketPosition(tokenList, location);
-            ArrayList<String> newTokenList = new ArrayList<>();
-            if (braket[BRACKET_END] < 2) {
-                braket[BRACKET_END] = location + 1;
-                newTokenList.add(tokenList.get(location + 1));
-            } else {
-                for (int i = braket[BRACKET_START] + 1; i < braket[BRACKET_END]; i++) {
-                    newTokenList.add(tokenList.get(i));
+            //괄호는 전부 계산이 끝난 상태 - 괄호는 없음
+            switch (op) {
+                case "√": {
+                    value = calculateByOpCode(Double.parseDouble(tokenList.get(location + 1)), 0.0, op);
+                    break;
                 }
-                newTokenList = stackCalc(newTokenList);
+                case "!": {
+                    value = calculateByOpCode(Double.parseDouble(tokenList.get(location - 1)), 0.0, op);
+                    location--; // 숫자가 앞에 있으므로 replaceCenterList의 형식에 맞게 수정
+                    break;
+                }
             }
-            double value = calculateByOpCode(Double.parseDouble(newTokenList.get(0)), 0.0, op);
             resultList.add(String.valueOf(value));
         }
-        return replaceCenterList(tokenList, location, braket[BRACKET_END], resultList);
+        return replaceCenterList(tokenList, location, location + 1, resultList);
     }
 
     private boolean hasSingleOperator(ArrayList<String> tokenList) {
-        return (tokenList.contains("√") || tokenList.contains("!"));
+        String[] singleOp = {"√", "!"};
+        for (String op : singleOp) {
+            if (tokenList.contains(op)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isSingleOperator(String operator) {
-        return ("√".equals(operator) || "!".equals(operator));
+        String[] singleOp = {"√", "!"};
+        for (String op : singleOp) {
+            if (op.equals(operator)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ArrayList<String> replaceCenterList(ArrayList<String> tokenList,
@@ -240,53 +243,6 @@ public class Calculation {
         return bracketPosition;
     }
 
-    // 입력된 문자열을 숫자 및 연산자 등으로 각각 분리해서 리스트로 만든다
-    private ArrayList<String> splitByOperator(String data) {
-        ArrayList tokenList = new ArrayList();
-        String digits = "";
-        for (int i = 0; i < data.length(); i++) {
-            if (isDigitOrDot(data.charAt(i))) {
-                // 수 라면
-                digits += data.substring(i, i + 1);
-            } else {
-                // 수가 아니라면
-                if (digits.isEmpty()) {
-                    // 처음 이거나, 앞이 숫자가 아니었음(연산자)
-                    if ((MINUS.equals(data.substring(i, i + 1)) || PLUS.equals(data.substring(i, i + 1))) &&
-                            !tokenList.isEmpty() && isSingleOperator((String) tokenList.get(tokenList.size() - 1))) {
-                        // 부호이거나 (이 경우 숫자에 포함)
-                        digits += data.substring(i, i + 1);
-                    } else {
-                        tokenList.add(data.substring(i, i + 1));
-                    }
-                } else {
-                    // 숫자가 있으므로 숫자 저장과 연산자 저장
-                    tokenList.add(digits);
-                    tokenList.add(data.substring(i, i + 1));
-                    digits = "";
-                }
-            }
-        }
-        if (!digits.isEmpty()) {
-            tokenList.add(digits);
-        }
-        return tokenList;
-    }
-
-    private boolean isSign(String operator, String preOperator) {
-        boolean isSign = false;
-        if ("+-".contains(operator)) {
-            if ("√()*/+-".contains(preOperator)) {
-                isSign = true;
-            } else {
-                throw new RuntimeException("Calculate Error");
-            }
-        } else if ("*/".contains(operator)) {
-        }
-
-        return isSign;
-    }
-
     // 숫자 계산
     private double calculateByOpCode(double op1, double op2, String opcode) {
         if ("+".equals(opcode)) {
@@ -327,10 +283,72 @@ public class Calculation {
     }
 */
 
+    // 입력된 문자열을 숫자 및 연산자 등으로 각각 분리해서 리스트로 만든다
+    private ArrayList<String> splitByOperator(String data) {
+        // 2017.09.03  "√(4)-√(9) = error"
+        // 2017.09.03  "√4-√9 = error"
+        ArrayList<String> tokenList = new ArrayList<>();
+        String digits = "";
+        String oneChar = "";
+        for (int i = 0; i < data.length(); i++) {
+            oneChar = data.substring(i, i + 1);
+            if (isDigitOrDot(data.charAt(i))) {
+                // 수 라면
+                digits += oneChar; // 수를 만드는 과정
+            } else {
+                // 수가 아니라면
+                if (digits.isEmpty()) {
+                    // 처음 이거나, 앞이 숫자가 아니었음(연산자)
+                    if (isSign(oneChar)) {
+                        // 내가 "+" 또는 "-" 이라면 앞이 연산자이고 뒤가 숫자이면 부호임
+                        if (isOperator(data, tokenList, i)) {
+                            tokenList.add(oneChar); //연산자
+                        } else {
+                            digits += oneChar;      //부호
+                        }
+                    } else {
+                        tokenList.add(oneChar);
+                    }
+                } else {
+                    // 숫자가 있으므로 숫자 저장과 연산자 저장
+                    tokenList.add(digits);
+                    tokenList.add(oneChar);
+                    digits = "";
+                }
+            }
+        }
+        if (!digits.isEmpty()) {
+            tokenList.add(digits);
+        }
+        return tokenList;
+
+    }
+
+    private boolean isOperator(String data, ArrayList<String> tokenList, int i) {
+        //처음인데 +-이면 부호임
+        if (tokenList.isEmpty()) {
+            return false;
+        } else {
+            if (Pattern.matches("^[0-9.]*$", tokenList.get(tokenList.size() - 1))) {
+                return true;
+            } else {//연산자
+                if (isDigitOrDot(data.charAt(i + 1))) { //뒤가 숫자
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+    }
+
     /****************************************************/
     // 숫자 및 점 이외는 false
     private boolean isDigitOrDot(char token) {
         return (Character.isDigit(token) || token == 46);  // 46 = dot
+    }
+
+    private boolean isSign(String sign) {
+        return (MINUS.equals(sign) || PLUS.equals(sign));
     }
 
     // 받은 문자열에서 공백은 없애고, 필요한 변환 작업 실행
@@ -343,18 +361,21 @@ public class Calculation {
                 data = data.replace(CONVERT_FROM[i], CONVERT_TO[i]);
             }
         }
-        //앞에 부호있으면 변화
-        if (data.charAt(0) == 43 || data.charAt(0) == 45) {
+//        // 첫문자가 "0-9,(,√,+,-"이외는 에러
+//        if (!Pattern.matches("^[0-9(√+-]*$", data.substring(0, 1))) {
+//            throw new RuntimeException("Calculate Error");
+//        }
+        //앞에 부호있으면 변환
+        if (isSign(data.substring(0, 1))) { // +, -
             data = "0" + data;
         }
-        return data;
-    }
-
-    // 괄호 쌍이 맞는지 검사와 데이타 맨 오른쪽이 숫자이거나 괄호이어야 함
-    private boolean checkBracketPair(String data) {
         char ch = data.charAt(data.length() - 1);   // 41="("
-        return (isDigitOrDot(ch) || ch == 41)  // 데이타 끝이 숫자, 점, 오른쪽 괄호 이면서 쌍이 맞아야 됨
-                && (data.replace("(", "").length() == data.replace(")", "").length());
+        // 괄호 쌍이 맞는지 검사와 데이타 맨 오른쪽이 숫자이거나 괄호이거나 "!" 이어야 함
+        if (!(isDigitOrDot(ch) || ch == 41 || "!".equals(ch))  // 데이타 끝이 숫자, 점, 오른쪽 괄호 이면서 쌍이 맞아야 됨
+                && (data.replace("(", "").length() == data.replace(")", "").length())) {
+            throw new RuntimeException("Calculate Error");
+        }
+        return data;
     }
 
 }
